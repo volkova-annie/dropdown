@@ -1,13 +1,17 @@
 <template>
   <div class='container'>
     <button type="button" name="button" v-on:click='toggleClass' v-bind:class='[isActive ? "arrow" : "", "dropdown-menu-title"]'>
-      <!-- <span class="placeholder">Статус претензии</span> -->
-      <span class="placeholder">{{ placeholder }}</span>
+      <span class="placeholder">{{ options.placeholder }}</span>
     </button>
     <ul id='dropdown-menu' v-bind:class='{"open": isActive}'>
-      <li class='dropdown-menu-option' v-for='option in options'>
+      <li class='dropdown-menu-option' >
         <label>
-          <input class='dropdown' type='checkbox' v-bind:value='option.value' v-model='option.checked' v-on:click='selectOption(option)'/>{{option.title}}
+          <input class='dropdown' type='checkbox' v-model='isAllChecked' v-on:click='selectAll()'/>{{options.allTitle}}
+        </label>
+      </li>
+      <li class='dropdown-menu-option' v-for='option in statuses' >
+        <label>
+          <input class='dropdown' type='checkbox' v-bind:value='option.value' v-model='option.isChecked' @click='onSelect(option)'/>{{option.title}} {{option.isChecked?'true':'false'}}
         </label>
       </li>
     </ul>
@@ -16,86 +20,73 @@
 
 <script>
 
-
 export default {
-  data()  {
+  props: ['options', 'statuses'],
+  data: function () {
     return {
-      options: [
-        {
-          title: 'Все',
-          id: 1,
-          value: '',
-          checked: false
-        }, {
-          title: 'На проверке',
-          id: 2,
-          value: 'saved',
-          checked: false
-        }, {
-          title: 'На рассмотрении',
-          id: 3,
-          value: 'processed',
-          checked: false
-        }, {
-          title: 'На доработке',
-          id: 4,
-          value: 'returned',
-          checked: false
-        }, {
-          title: 'Согласована',
-          id: 5,
-          value: 'accepted',
-          checked: false
-        }, {
-          title: 'Не удовлетворена',
-          id: 6,
-          value: 'declined',
-          checked: false
-        }
-      ],
+      isAllChecked: false,
       isActive: false,
-      selectedOptions: []
+      checkedStatuses: []
     }
   },
   computed: {
+    // localStatuses() {
+    //   const temp = this.statuses.map(el => {
+    //     el.isChecked = !!el.isChecked;
+    //     return el;
+    //   })
+    //   console.log(temp);
+    //   return temp;
+    // },
     placeholder() {
-      var arr = this.selectedOptions;
-      var text = this.selectedOptions.map(el => el.title).join(', ');
-      // console.log(text);
-      // console.log(arr);
-      if (arr.length === 4) {
-        // console.log('4 из 5');
+      const checkedOptions = this.localStatuses.filter(el => el.isChecked);
+      if (checkedOptions.length === 0) {
+        return ('Статус претензии');
       }
-      if (arr.length === 6) {
-        // console.log('all');
+      else if (checkedOptions.length>0 && checkedOptions.length <4) {
+        return (checkedOptions.map(el => el.title).join(', '));
+      } else if (checkedOptions.length === this.localStatuses.length){
+        return (this.all.title);
       }
-      arr.map(function(el) {
-        if (el.id === 1){
-          // console.log('hello');
-        }
+      else {
+        return (checkedOptions.length + ' из ' + this.localStatuses.length + ' выбрано');
       }
-    );
-      // if ()
-      // return this.selectedOptions.map(el => el.title).join(', ');
+      return this.localStatuses.filter(el => el.isChecked).map(el => el.title).join(', ');
+    },
+    isRealAllChecked() {
+      console.log(this.localStatuses.every(el => el.isChecked));
+      return this.localStatuses.every(el => el.isChecked);
     }
   },
   methods: {
-    selectOption: function(option) {
+    onSelect: function (option) {
       if (option.isChecked) {
-        this.selectedOptions = this.selectedOptions.filter(el => el.id !== option.id);
+        option.isChecked = false;
+
       } else {
         option.isChecked = true;
-        this.selectedOptions.push(option);
-        console.log(option.checked);
       }
+    },
+    selectAll: function() {
+      this.localStatuses = this.localStatuses.map(el => {
+        if (this.isAllChecked) {
+          el.isChecked = true
+        } else {
+          el.isChecked = false
+        }
+        return el
+      })
     },
     toggleClass: function() {
       this.isActive = !this.isActive
-      console.log(this.options.checked);
+    },
+  },
+  watch: {
+    isRealAllChecked(value) {
+      this.isAllChecked = value
     }
   }
 }
-
 
 </script>
 
@@ -112,14 +103,14 @@ export default {
     justify-content: space-around;
     position: inherit;
     width: 202px;
-    color: black;
+    color: #424141;
     margin: 0;
     padding: 0;
     font-family: Roboto;
     font-size: 17px;
     height: 22px;
     font-weight: bold;
-    border: 1px solid #000;
+    border: 1px solid #424141;
     text-align: left;
     background-color: inherit;
     cursor: pointer;
@@ -148,14 +139,15 @@ export default {
     margin: 0;
     list-style: none;
     color: gray;
-    border-left: 1px solid #000;
-    border-right: 1px solid #000;
+    border-left: 1px solid #424141;
+    border-right: 1px solid #424141;
   }
   #dropdown-menu.open {
     display: block;
+    cursor: pointer;
   }
   .open:last-child {
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid #424141;
   }
   ul#dropdown-menu.open:not(:last-child) {
   }
@@ -164,7 +156,8 @@ export default {
     color: gray;
   }
   li.dropdown-menu-option:hover {
-    color: black;
+    color: #000000;
+    background-color: #e2e2e2;
   }
   li.dropdown-menu-option:last-child {
     border-bottom: none;
@@ -174,6 +167,9 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .dropdown, .dropdown-menu-option > label {
+    cursor: pointer;
   }
 
 
