@@ -21,24 +21,19 @@ export default {
       statuses: [
         {
           title: 'На проверке',
-          value: 'saved',
-          // isChecked: false
+          value: 'saved'
         }, {
           title: 'На рассмотрении',
-          value: 'processed',
-          // isChecked: false
+          value: 'processed'
         }, {
           title: 'На доработке',
-          value: 'returned',
-          // isChecked: false
+          value: 'returned'
         }, {
           title: 'Согласована',
-          value: 'accepted',
-          // isChecked: false
+          value: 'accepted'
         }, {
           title: 'Не удовлетворена',
-          value: 'declined',
-          // isChecked: false
+          value: 'declined'
         }
       ]
     }

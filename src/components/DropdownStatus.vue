@@ -9,9 +9,9 @@
           <input class='dropdown' type='checkbox' v-model='isAllChecked' v-on:click='selectAll()'/>{{options.allTitle}}
         </label>
       </li>
-      <li class='dropdown-menu-option' v-for='option in statuses' >
+      <li class='dropdown-menu-option' v-for='option in localStatuses'>
         <label>
-          <input class='dropdown' type='checkbox' v-bind:value='option.value' v-model='option.isChecked' @click='onSelect(option)'/>{{option.title}} {{option.isChecked?'true':'false'}}
+          <input class='dropdown' type='checkbox' v-bind:value='option.value' v-model='option.isChecked'/>{{option.title}} {{option.isChecked?'true':'false'}}
         </label>
       </li>
     </ul>
@@ -26,18 +26,15 @@ export default {
     return {
       isAllChecked: false,
       isActive: false,
-      checkedStatuses: []
+      localStatuses: this.statuses.map(el => {
+        return {
+          ...el,
+          isChecked: false
+        }
+      })
     }
   },
   computed: {
-    // localStatuses() {
-    //   const temp = this.statuses.map(el => {
-    //     el.isChecked = !!el.isChecked;
-    //     return el;
-    //   })
-    //   console.log(temp);
-    //   return temp;
-    // },
     placeholder() {
       const checkedOptions = this.localStatuses.filter(el => el.isChecked);
       if (checkedOptions.length === 0) {
@@ -54,36 +51,27 @@ export default {
       return this.localStatuses.filter(el => el.isChecked).map(el => el.title).join(', ');
     },
     isRealAllChecked() {
-      console.log(this.localStatuses.every(el => el.isChecked));
       return this.localStatuses.every(el => el.isChecked);
     }
   },
   methods: {
-    onSelect: function (option) {
-      if (option.isChecked) {
-        option.isChecked = false;
-
-      } else {
-        option.isChecked = true;
-      }
-    },
     selectAll: function() {
-      this.localStatuses = this.localStatuses.map(el => {
+      this.localStatuses.map(el => {
         if (this.isAllChecked) {
-          el.isChecked = true
+          el.isChecked = true;
         } else {
-          el.isChecked = false
+          el.isChecked = false;
         }
         return el
       })
     },
     toggleClass: function() {
-      this.isActive = !this.isActive
+      this.isActive = !this.isActive;
     },
   },
   watch: {
     isRealAllChecked(value) {
-      this.isAllChecked = value
+      this.isAllChecked = value;
     }
   }
 }
