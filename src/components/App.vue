@@ -16,7 +16,8 @@ export default {
     return {
       options: {
         placeholder: 'Статус претензии',
-        allTitle: 'Все'
+        allTitle: 'Все',
+        class: 'container'
       },
       statuses: [
         {
@@ -42,4 +43,10 @@ export default {
 </script>
 
 <style>
+.container {
+  width: 300px;
+  font-family: Helvetica;
+  font-size: 16px;
+
+}
 </style>

@@ -1,17 +1,17 @@
 <template>
-  <div class='container'>
+  <div class='container' v-on-clickaway='close'>
     <button type="button" name="button" v-on:click='toggleClass' v-bind:class='[isActive ? "arrow" : "", "dropdown-menu-title"]'>
-      <span class="placeholder">{{ placeholder }}</span>
+      <div class="placeholder">{{ placeholder }}</div>
     </button>
-    <ul id='dropdown-menu' v-bind:class='{"open": isActive}'>
-      <label>
-        <li class='dropdown-menu-option' >
-          <input class='dropdown' type='checkbox' v-on:change='selectAll()' v-model='isAllChecked'/>{{options.allTitle}}
+    <ul class='dropdown-menu' v-bind:class='{"open": isActive}'>
+      <label class='dropdown-menu-option'>
+        <li>
+          <input class='dropdown-menu-option-input' type='checkbox' v-on:change='selectAll()' v-model='isAllChecked'/>{{options.allTitle}}
         </li>
       </label>
       <label class='dropdown-menu-option' v-for='option in localStatuses'>
         <li>
-          <input class='dropdown' type='checkbox' v-bind:value='option.value' v-model='option.isChecked'/>{{option.title}}
+          <input class='dropdown-menu-option-input' type='checkbox' v-bind:value='option.value' v-model='option.isChecked'/>{{option.title}}
         </li>
       </label>
     </ul>
@@ -19,8 +19,12 @@
 </template>
 
 <script>
+import { directive as onClickaway } from 'vue-clickaway'
 
 export default {
+  directives: {
+    onClickaway
+  },
   props: ['options', 'statuses'],
   data: function () {
     return {
@@ -29,7 +33,7 @@ export default {
       localStatuses: this.statuses.map(el => {
         return {
           ...el,
-          isChecked: false
+          isChecked: !!el.isChecked
         }
       })
     }
@@ -53,7 +57,6 @@ export default {
       return checkedOptions.length + ' из ' + this.localStatuses.length + ' выбрано';
     },
     isRealAllChecked() {
-      console.log(this.localStatuses.every(el => el.isChecked));
       return this.localStatuses.every(el => el.isChecked);
     }
   },
@@ -71,6 +74,9 @@ export default {
     toggleClass: function() {
       this.isActive = !this.isActive;
     },
+    close: function() {
+      this.isActive = false
+    },
   },
   watch: {
     isRealAllChecked(value) {
@@ -78,54 +84,37 @@ export default {
     }
   }
 }
-
 </script>
 
 <style>
-  .container {
-    position: absolut;
-    width: 200px;
-    font-family: Roboto;
-    font-size: 16px;
-  }
   .dropdown-menu-title {
-    position: absolute;
-    display: flex;
-    justify-content: space-around;
-    position: inherit;
-    width: 202px;
-    color: #424141;
-    margin: 0;
-    padding: 0;
-    font-family: Roboto;
-    font-size: 17px;
+    width: 100%;
+    position: relative;
+    font-family: inherit;
+    font-size: inherit;
+    background-color: inherit;
     height: 22px;
-    font-weight: bold;
     border: 1px solid #424141;
     text-align: left;
-    background-color: inherit;
     cursor: pointer;
   }
-  .dropdown-menu-title:after {
+  .dropdown-menu-title:after, .arrow:after {
     position: absolute;
-    left: 185px;
-    top: 12px;
-    content: "▼";
+    right: 15px;
+    top: 3px;
     font-size: 14px;
+  }
+  .dropdown-menu-title:after {
+    content: "▼";
+  }
+  .arrow:after {
+    content: "▲";
   }
   .dropdown-menu-title:focus {
     outline: none;
   }
-  .arrow:after {
-    position: absolute;
-    left: 185px;
-    top: 12px;
-    content: "▲";
-    font-size: 14px;
-  }
-  #dropdown-menu {
+  .dropdown-menu {
     display: none;
-    width: 200px;
     padding: 0;
     margin: 0;
     list-style: none;
@@ -133,33 +122,31 @@ export default {
     border-left: 1px solid #424141;
     border-right: 1px solid #424141;
   }
-  #dropdown-menu.open {
-    display: block;
-    cursor: pointer;
-  }
   .open:last-child {
     border-bottom: 1px solid #424141;
   }
-  ul#dropdown-menu.open:not(:last-child) {
+  .dropdown-menu.open {
+    display: block;
   }
-  li.dropdown-menu-option {
+  .dropdown-menu-option {
     border-bottom: 1px solid #d6d6d6;
-    color: gray;
   }
-  li.dropdown-menu-option:hover {
+  .dropdown-menu-option:hover {
     color: #000000;
-    background-color: #e2e2e2;
+    background-color: gray;
+    cursor: pointer;
   }
-  li.dropdown-menu-option:last-child {
+  .dropdown-menu-option:last-child {
     border-bottom: none;
   }
+  .dropdown-menu-option > li:hover {
+    background-color: #e2e2e2;
+  }
   .placeholder {
-    width: 82%;
+    padding-right: 25px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .dropdown, .dropdown-menu-option > label {
-    cursor: pointer;
-  }
+
 </style>
