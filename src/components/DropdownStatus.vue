@@ -4,16 +4,16 @@
       <span class="placeholder">{{ placeholder }}</span>
     </button>
     <ul id='dropdown-menu' v-bind:class='{"open": isActive}'>
-      <li class='dropdown-menu-option' >
-        <label>
-          <input class='dropdown' type='checkbox' v-model='isAllChecked' v-on:click='selectAll()'/>{{options.allTitle}}
-        </label>
-      </li>
-      <li class='dropdown-menu-option' v-for='option in localStatuses'>
-        <label>
-          <input class='dropdown' type='checkbox' v-bind:value='option.value' v-model='option.isChecked'/>{{option.title}} {{option.isChecked?'true':'false'}}
-        </label>
-      </li>
+      <label>
+        <li class='dropdown-menu-option' >
+          <input class='dropdown' type='checkbox' v-on:change='selectAll()' v-model='isAllChecked'/>{{options.allTitle}}
+        </li>
+      </label>
+      <label class='dropdown-menu-option' v-for='option in localStatuses'>
+        <li>
+          <input class='dropdown' type='checkbox' v-bind:value='option.value' v-model='option.isChecked'/>{{option.title}}
+        </li>
+      </label>
     </ul>
   </div>
 </template>
@@ -37,21 +37,23 @@ export default {
   computed: {
     placeholder() {
       const checkedOptions = this.localStatuses.filter(el => el.isChecked);
+
       if (checkedOptions.length === 0) {
-        return (this.options.placeholder);
+        return this.options.placeholder;
       }
-      else if (checkedOptions.length>0 && checkedOptions.length <4) {
-        return (checkedOptions.map(el => el.title).join(', '));
+
+      if (checkedOptions.length < 4) {
+        return checkedOptions.map(el => el.title).join(', ');
       }
-      else if (checkedOptions.length === this.localStatuses.length){
-        return (this.options.allTitle);
+
+      if (checkedOptions.length === this.localStatuses.length){
+        return this.options.allTitle;
       }
-      else {
-        return (checkedOptions.length + ' из ' + this.localStatuses.length + ' выбрано');
-      }
-      return this.localStatuses.filter(el => el.isChecked).map(el => el.title).join(', ');
+
+      return checkedOptions.length + ' из ' + this.localStatuses.length + ' выбрано';
     },
     isRealAllChecked() {
+      console.log(this.localStatuses.every(el => el.isChecked));
       return this.localStatuses.every(el => el.isChecked);
     }
   },
@@ -160,7 +162,4 @@ export default {
   .dropdown, .dropdown-menu-option > label {
     cursor: pointer;
   }
-
-
-
 </style>
