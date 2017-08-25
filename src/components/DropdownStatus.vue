@@ -1,7 +1,7 @@
 <template>
   <div class='container'>
     <button type="button" name="button" v-on:click='toggleClass' v-bind:class='[isActive ? "arrow" : "", "dropdown-menu-title"]'>
-      <span class="placeholder">{{ options.placeholder }}</span>
+      <span class="placeholder">{{ placeholder }}</span>
     </button>
     <ul id='dropdown-menu' v-bind:class='{"open": isActive}'>
       <li class='dropdown-menu-option' >
@@ -38,12 +38,13 @@ export default {
     placeholder() {
       const checkedOptions = this.localStatuses.filter(el => el.isChecked);
       if (checkedOptions.length === 0) {
-        return ('Статус претензии');
+        return (this.options.placeholder);
       }
       else if (checkedOptions.length>0 && checkedOptions.length <4) {
         return (checkedOptions.map(el => el.title).join(', '));
-      } else if (checkedOptions.length === this.localStatuses.length){
-        return (this.all.title);
+      }
+      else if (checkedOptions.length === this.localStatuses.length){
+        return (this.options.allTitle);
       }
       else {
         return (checkedOptions.length + ' из ' + this.localStatuses.length + ' выбрано');
@@ -151,7 +152,7 @@ export default {
     border-bottom: none;
   }
   .placeholder {
-    width: 85%;
+    width: 82%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
