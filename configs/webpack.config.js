@@ -27,8 +27,9 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: {
+         options: {
           loaders: {
+            js: 'babel-loader',
             css: ExtractTextPlugin.extract({
               use: 'css-loader',
               fallback: 'vue-style-loader'
@@ -41,7 +42,7 @@ module.exports = {
         use:  'file-loader',
       },
       {
-        test: /\.jsx?$/,
+        test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
       },
@@ -87,6 +88,9 @@ module.exports = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV)
       }
     }),
+    new webpack.ProvidePlugin({
+      Vue: ['vue/dist/vue.esm.js', 'default']
+})
   ],
   resolve: {
     extensions: ['.js', '.vue', '.json'],
