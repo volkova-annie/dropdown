@@ -4,16 +4,16 @@
       <div class="placeholder">{{ placeholder }}</div>
     </button>
     <ul class='dropdown-menu' v-bind:class='{"open": isActive}'>
-      <label class='dropdown-menu-option'>
-        <li>
+      <li class='dropdown-menu-item'>
+        <label class='dropdown-menu-option'>
           <input class='dropdown-menu-option-input' type='checkbox' v-on:change='selectAll()' v-model='isAllChecked'/>{{options.allTitle}}
-        </li>
-      </label>
-      <label class='dropdown-menu-option' v-for='option in localStatuses'>
-        <li>
+        </label>
+      </li>
+      <li class='dropdown-menu-item' v-for='option in localStatuses'>
+        <label class='dropdown-menu-option'>
           <input class='dropdown-menu-option-input' type='checkbox' v-bind:value='option.value' v-model='option.isChecked'/>{{option.title}}
-        </li>
-      </label>
+        </label>
+      </li>
     </ul>
   </div>
 </template>
@@ -122,6 +122,9 @@ export default {
     border-left: 1px solid #424141;
     border-right: 1px solid #424141;
   }
+  .dropdown-menu-item {
+    display: block;
+  }
   .open:last-child {
     border-bottom: 1px solid #424141;
   }
@@ -130,6 +133,7 @@ export default {
   }
   .dropdown-menu-option {
     border-bottom: 1px solid #d6d6d6;
+    display: block;
   }
   .dropdown-menu-option:hover {
     color: #000000;
