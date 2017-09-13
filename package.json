@@ -5,8 +5,8 @@
   "author": "Annie",
   "license": "MIT",
   "scripts": {
-    "start": "npm run build && npm run server",
-    "dev": "npm run build:dev & npm run server & npm run bs",
+    "start": "yarn build && yarn server",
+    "dev": "yarn build:dev & yarn server & yarn bs",
     "build": "webpack --config ./configs/webpack.config.js",
     "build:dev": "webpack --config ./configs/webpack.config.js --watch",
     "server": "node server",
